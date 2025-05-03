@@ -5,6 +5,7 @@ from src.utils.http.http_client import HttpClient
 from src.models.service_instance import ServiceInstance
 from src.models.health_status import HealthStatus
 from src.utils.logger_config import setup_logger
+from fastapi import HTTPException
 
 logger = setup_logger(__name__)
 
@@ -16,7 +17,7 @@ class RoundRobinRouter(Router):
         self.lock = asyncio.Lock()
         self.cur_index = 0 # Index into svc_instances list to select the next instance
 
-    async def get_next_service_instance(self) -> str:
+    async def get_next_service_instance(self):
         logger.info("Starting to find next healthy instance....")
         async with self.lock:
             num_instances = len(self.svc_instances)
@@ -30,9 +31,18 @@ class RoundRobinRouter(Router):
                                    f"Skipping it!")
 
             logger.error("No healthy instances available")
-            raise Exception("No healthy instances available")
+            return None
 
-    # endpoint should be like "/echo"
     async def route(self, endpoint: str, request_payload: dict) -> dict:
-        target_url = await self.get_next_service_instance()
-        return await self.http_client.post(target_url + endpoint, request_payload)
+        try:
+            target_url = await self.get_next_service_instance()
+            if not target_url:
+                raise HTTPException(status_code=500,
+                                    detail="No healthy downstream instance available")
+            return await self.http_client.post(target_url + endpoint, request_payload)
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error from downstream instance: {str(e)}")
+            raise HTTPException(status_code=500,
+                                detail="Error received from downstream instance")

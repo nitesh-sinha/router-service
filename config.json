@@ -1,11 +1,11 @@
 {
   "app_instances": [
-    "http://localhost:30100",
-    "http://localhost:30101",
-    "http://localhost:30102",
-    "http://localhost:30102"
+    "http://localhost:9001",
+    "http://localhost:9002",
+    "http://localhost:9003",
+    "http://localhost:9004"
   ],
-  "response_time_threshold": 5,
+  "healthcheck_response_time_threshold": 5,
   "health_check_interval": 10,
   "degraded_check_interval": 30,
   "router_port": 8000,
