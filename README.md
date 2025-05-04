@@ -13,7 +13,7 @@ A routing service that distributes traffic across multiple downstream applicatio
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:nitesh-sinha/router-service.git
 cd router-service
 ```
 
@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 ## Configuration
 
-The service is configured via `src/config.json`:
+The service is configured via `config.json`:
 
 ```json
 {
@@ -94,4 +94,4 @@ PYTHONPATH=$PYTHONPATH:. python main.py
 
 ## Logging
 
-Router-service writes logs to a file called `router.log`.
+Router-service writes logs to `router.log` file.

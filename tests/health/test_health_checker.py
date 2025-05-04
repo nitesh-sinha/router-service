@@ -37,7 +37,7 @@ async def test_healthcheck_times_out_sets_instance_degraded():
                                    config=mock_config,
                                    time_provider=mock_time_provider)
 
-    await health_checker.check_instance_health(mock_svc_instance)
+    await health_checker.check_and_update_instance_health(mock_svc_instance)
 
     mock_svc_instance.update_health_status.assert_called_once_with(HealthStatus.DEGRADED)
 
@@ -70,7 +70,7 @@ async def test_healthcheck_errors_out_sets_instance_unhealthy():
                                    config=mock_config,
                                    time_provider=mock_time_provider)
 
-    await health_checker.check_instance_health(mock_svc_instance)
+    await health_checker.check_and_update_instance_health(mock_svc_instance)
 
     mock_svc_instance.update_health_status.assert_called_once_with(HealthStatus.UNHEALTHY)
 
@@ -102,7 +102,7 @@ async def test_healthcheck_passes_sets_instance_healthy():
                                    config=mock_config,
                                    time_provider=mock_time_provider)
 
-    await health_checker.check_instance_health(mock_svc_instance)
+    await health_checker.check_and_update_instance_health(mock_svc_instance)
 
     mock_svc_instance.update_health_status.assert_called_once_with(HealthStatus.HEALTHY)
 
@@ -136,7 +136,7 @@ async def test_healthcheck_skips_degraded_instance():
                                    config=mock_config,
                                    time_provider=mock_time_provider)
 
-    await health_checker.check_instance_health(mock_svc_instance)
+    await health_checker.check_and_update_instance_health(mock_svc_instance)
 
     mock_svc_instance.update_health_status.assert_not_called()
 
@@ -169,6 +169,6 @@ async def test_healthcheck_does_not_skip_degraded_instance():
                                    config=mock_config,
                                    time_provider=mock_time_provider)
 
-    await health_checker.check_instance_health(mock_svc_instance)
+    await health_checker.check_and_update_instance_health(mock_svc_instance)
 
     mock_svc_instance.update_health_status.assert_called_once_with(HealthStatus.HEALTHY)

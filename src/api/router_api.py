@@ -9,7 +9,10 @@ def create_api_router(router: Router):
     api_router = APIRouter()
 
     @api_router.post("/echo")
-    async def echo(payload: dict):
+    async def post(payload: dict):
+        """
+        POST endpoint of the router-service
+        """
         try:
             response = await router.route("/echo", payload)
             return JSONResponse(content=response,status_code=200)

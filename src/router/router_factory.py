@@ -5,8 +5,11 @@ from src.router.round_robin_router import RoundRobinRouter
 
 
 def create_router(config: dict, svc_instances: list[ServiceInstance]) -> Router:
-    #routing_algo = config["routing_algorithm"]
-    routing_algo = "round_robin"
+    """
+    Uses factory design pattern to create an appropriate router service
+    based on the routing algorithm in config.json
+    """
+    routing_algo = config["routing_algorithm"]
     http_client = HttpClient()
 
     if routing_algo == "round_robin":

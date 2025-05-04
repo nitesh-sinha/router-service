@@ -20,6 +20,9 @@ def read_config_file() -> dict:
 
 
 def create_app(config: dict):
+    """
+    Creates the router API service and starts the healthchecker
+    """
     app = FastAPI()
     urls = config['app_instances']
     instances = [ServiceInstance(url) for url in urls]

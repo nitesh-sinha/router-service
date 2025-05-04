@@ -1,0 +1,10 @@
+[2025-05-04 17:17:41] [INFO] src.health.health_checker: Starting health check for http://localhost:9999
+[2025-05-04 17:17:43] [WARNING] src.health.health_checker: Healthcheck timed out for http://localhost:9999
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Starting health check for http://localhost:9999
+[2025-05-04 17:17:43] [ERROR] src.health.health_checker: Error while getting health status for http://localhost:9999 : 
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Starting health check for http://localhost:9999
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Got healthcheck response for http://localhost:9999 in 1.0 seconds
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Starting health check for http://localhost:9999
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Skipping healthcheck of DEGRADED instance http://localhost:9999
+[2025-05-04 17:17:43] [INFO] src.health.health_checker: Starting health check for http://localhost:9999
+[2025-05-04 17:17:44] [INFO] src.health.health_checker: Got healthcheck response for http://localhost:9999 in 1.0 seconds

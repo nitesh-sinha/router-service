@@ -20,16 +20,26 @@ class HealthChecker:
         self.time_provider = time_provider
 
     async def run(self):
+        """
+        Main loop to keep the healthchecker running every 
+        health_check_interval seconds. It sends healthcheck
+        requests to each downstream instance asynchronously.
+        """
         while True:
             self.log_current_health_status()
             start = self.time_provider()
-            tasks = [self.check_instance_health(instance) for instance in self.svc_instances]
+            tasks = [self.check_and_update_instance_health(instance) for instance in self.svc_instances]
             await asyncio.gather(*tasks)
             elapsed = self.time_provider() - start
             if elapsed < self.config["health_check_interval"]:
                 await asyncio.sleep(self.config["health_check_interval"] - elapsed)
 
-    async def check_instance_health(self, instance: ServiceInstance):
+    async def check_and_update_instance_health(self, instance: ServiceInstance):
+        """
+        Given an instance, it checks its health by sending probe requests
+        and categorizes its heath status based on the response time. It also
+        updates the health status of the instance
+        """
         logger.info(f"Starting health check for {instance.get_url()}")
         if self.skip_degraded_instance(instance):
             logger.info(f"Skipping healthcheck of DEGRADED instance {instance.get_url()}")
@@ -57,6 +67,10 @@ class HealthChecker:
             instance.update_last_healthcheck_time(start_time)
 
     def skip_degraded_instance(self, instance: ServiceInstance) -> bool:
+        """
+        Determines whether healthcheck of a given instance can be skipped
+        in the current healthcheck interval or not
+        """
         now = self.time_provider()
         if (instance.health_status == HealthStatus.DEGRADED and
                 (now - instance.get_last_healthcheck_time() < self.config['degraded_check_interval'])):
@@ -64,6 +78,9 @@ class HealthChecker:
         return False
 
     def log_current_health_status(self):
+        """
+        Logs the health status of all configured downstream instances
+        """
         logger.info("===================================================================")
         for instance in self.svc_instances:
             logger.info(
