@@ -146,7 +146,31 @@ Requests/sec:     76.11
 Transfer/sec:     16.05KB
 ```
 
-Also tried increasing Uvicorn workers to 4 and noticed average RPS 
+Multiprocessing tests: Increasing Uvicorn workers to 4 i.e. 4 independent router instances routing to 4 downstream HEALTHY instances could support ~193 RPS with 200 msec latency and 0.06% error rate. 
 
-
-
+```bash
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service % wrk -t2 -c40 -d30s -s post.lua http://localhost:8000/echo
+Running 30s test @ http://localhost:8000/echo
+  2 threads and 40 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   205.55ms   51.03ms 531.44ms   74.53%
+    Req/Sec    97.38     26.64   190.00     67.00%
+  5834 requests in 30.10s, 1.20MB read
+  Non-2xx or 3xx responses: 4
+Requests/sec:    193.80
+Transfer/sec:     40.88KB
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service % wrk -t4 -c40 -d30s -s post.lua http://localhost:8000/echo
+Running 30s test @ http://localhost:8000/echo
+  4 threads and 40 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   299.60ms  144.75ms 780.12ms   61.88%
+    Req/Sec    34.23     20.34   140.00     69.56%
+  3996 requests in 30.08s, 842.57KB read
+  Non-2xx or 3xx responses: 11
+Requests/sec:    132.84
+Transfer/sec:     28.01KB
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+```
