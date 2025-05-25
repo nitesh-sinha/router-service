@@ -95,3 +95,58 @@ PYTHONPATH=$PYTHONPATH:. python main.py
 ## Logging
 
 Router-service writes logs to `router.log` file.
+
+## Load testing:
+```bash
+wrk -t4 -c100 -d30s -s post.lua http://localhost:8000/echo 
+```
+
+Other tools: Apache JMeter, Locust(Python)
+
+### Test results:
+One instance of the router-service could handle ~79 RPS with 400msec average latency and 0% error rate.
+
+```bash
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service % wrk -t4 -c50 -d30s -s post.lua http://localhost:8000/echo
+Running 30s test @ http://localhost:8000/echo
+  4 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   624.98ms   86.75ms   1.04s    71.45%
+    Req/Sec    20.40     12.06    79.00     80.89%
+  2221 requests in 30.08s, 467.80KB read
+  Socket errors: connect 0, read 0, write 0, timeout 11
+  Non-2xx or 3xx responses: 23
+Requests/sec:     73.84
+Transfer/sec:     15.55KB
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service % wrk -t2 -c50 -d30s -s post.lua http://localhost:8000/echo
+Running 30s test @ http://localhost:8000/echo
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   619.44ms   89.41ms   1.78s    82.55%
+    Req/Sec    40.11     20.57   121.00     76.71%
+  2323 requests in 30.05s, 489.43KB read
+  Socket errors: connect 0, read 0, write 0, timeout 7
+  Non-2xx or 3xx responses: 19
+Requests/sec:     77.31
+Transfer/sec:     16.29KB
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service %
+(venv) niteshsinha@Niteshs-MacBook-Pro router-service % wrk -t2 -c30 -d30s -s post.lua http://localhost:8000/echo
+Running 30s test @ http://localhost:8000/echo
+  2 threads and 30 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   392.09ms   38.67ms 584.83ms   83.60%
+    Req/Sec    38.97     20.88   110.00     68.45%
+  2287 requests in 30.05s, 482.41KB read
+Requests/sec:     76.11
+Transfer/sec:     16.05KB
+```
+
+Also tried increasing Uvicorn workers to 4 and noticed average RPS 
+
+
+
